@@ -1,7 +1,4 @@
 
-
-
-
 function Producto(prenda, color, talle, modelo, precio) {
     this.prenda = prenda;
     this.color = color;
@@ -27,11 +24,13 @@ let ProductoBuzo2 = new Producto("buzos", "gris", tallesBuzo2, "UrbanComfort", 5
 productos.push(ProductoBuzo1, ProductoBuzo2);
 
 
-const enJSON = JSON.stringify(productos)
-
-localStorage.setItem("productos", enJSON)
-
-
+const productosGuardados = JSON.parse(localStorage.getItem("productos"));
+if (productosGuardados) {
+    productos = productosGuardados;
+} else {
+    // Guardar la lista predeterminada en LocalStorage si no hay datos almacenados
+    localStorage.setItem("productos", JSON.stringify(productos));
+}
 
 const inputPrenda = document.querySelector("#prenda");
 const inputColor = document.querySelector("#color");
@@ -93,27 +92,23 @@ const botonBorrar = document.querySelector("#borrar");
 
 
 
-// ... Tu código anterior ...
-
-// Obtén el elemento donde se mostrará la tabla
-const tablaProductos = document.getElementById("tablaProductos");
-
-// Crea la tabla inicial al cargar la página
-actualizarTabla();
-
-// Escucha el evento de clic en el botón "traer" para actualizar la tabla
+const tbody = document.querySelector("#tablaProductos tbody");
 botonTraer.addEventListener("click", actualizarTabla);
 
+function traerFormulario() {
+    const datosForm = localStorage.getItem("productos");
+    if (datosForm) {
+        const parsedData = JSON.parse(datosForm);
+        console.log(parsedData);
+    }
+}
+
 function actualizarTabla() {
-    // Limpia la tabla antes de actualizar
-    tablaProductos.innerHTML = "";
+    tbody.innerHTML = "";
 
-    // Recorre cada producto en el array
     productos.forEach((producto, index) => {
-        // Crea una nueva fila en la tabla
-        const fila = tablaProductos.insertRow();
+        const fila = tbody.insertRow();
 
-        // Añade celdas con las características del producto
         const celdaPrenda = fila.insertCell(0);
         const celdaColor = fila.insertCell(1);
         const celdaTalle = fila.insertCell(2);
@@ -124,13 +119,13 @@ function actualizarTabla() {
 
         celdaPrenda.innerText = producto.prenda;
         celdaColor.innerText = producto.color;
-        celdaTalle.innerText = producto.talle.join(", "); // Si talles es un array, muestra como cadena
+        celdaTalle.innerText = producto.talle;
         celdaModelo.innerText = producto.modelo;
         celdaPrecio.innerText = `$${producto.precio.toFixed(2)}`;
 
-        // Agrega botones para editar y eliminar
         const botonEditar = document.createElement("button");
         botonEditar.innerText = "Editar";
+        botonEditar.id = "editarFormulario"
         botonEditar.addEventListener("click", () => editarProducto(index));
 
         const botonEliminar = document.createElement("button");
@@ -142,77 +137,58 @@ function actualizarTabla() {
     });
 }
 
-// Función para editar un producto
+
+
+const botonEditarFormulario = document.querySelector("#editarFormulario");
+
+let indiceProductoEnEdicion = null;
+
 function editarProducto(index) {
-    // Implementa la lógica para editar un producto según tus necesidades
-    // Puedes abrir un modal o redirigir a otra página para la edición
-    console.log("Editar producto en índice:", index);
+    indiceProductoEnEdicion = index;
+
+    const productoEnEdicion = productos[index];
+
+    inputPrenda.value = productoEnEdicion.prenda;
+    inputColor.value = productoEnEdicion.color;
+    inputTalle.value = productoEnEdicion.talle;
+    inputModelo.value = productoEnEdicion.modelo;
+    inputPrecio.value = productoEnEdicion.precio.toFixed(2);
+
+    botonGuardar.innerText = "ACTUALIZAR";
+
+    botonEditarFormulario.style.display = "block";
 }
 
-// Función para eliminar un producto
+botonEditarFormulario.addEventListener("click", () => {
+    productos[indiceProductoEnEdicion] = {
+        prenda: inputPrenda.value,
+        color: inputColor.value,
+        talle: inputTalle.value,
+        modelo: inputModelo.value,
+        precio: parseFloat(inputPrecio.value),
+    };
+
+    limpiarFormulario();
+
+    botonGuardar.innerText = "GUARDAR";
+
+    botonEditarFormulario.style.display = "block";
+
+    actualizarTabla();
+
+    indiceProductoEnEdicion = null;
+});
+
+
+
 function eliminarProducto(index) {
-    // Elimina el producto del array y actualiza la tabla
+    
     productos.splice(index, 1);
     const enJSON = JSON.stringify(productos);
     localStorage.setItem("productos", enJSON);
     actualizarTabla();
-    console.log("Producto eliminado en índice:", index);
+    console.log("Producto eliminado");
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let titulo = document.getElementById("titulo")
-
-
-
-titulo.addEventListener("mouseover", function() {
-    console.log("el mouse paso")
-    
-})
 
 
 
