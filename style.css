@@ -42,7 +42,11 @@ button{
 #tablaProductos{
     display: flex;
     flex-direction: column;
+    margin-left: 25%;
 }
 #tablaProductos th{
     padding: 20px;
+}
+#tablaProductos tbody{
+    padding: 10px;
 }
