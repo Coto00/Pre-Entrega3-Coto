@@ -62,10 +62,10 @@ function guardarFormulario() {
         localStorage.setItem("productos", enJSON);
 
         limpiarFormulario();
-        console.log("Producto guardado:", nuevoProducto);
+        Swal.fire("Producto guardado")
     } else {
         console.log("Por favor, completa todos los campos correctamente.");
-        alert("Por favor, completa todos los campos correctamente.")
+        Swal.fire("Por favor, completa todos los campos correctamente.");
     }
 }
 
@@ -187,7 +187,6 @@ function eliminarProducto(index) {
     const enJSON = JSON.stringify(productos);
     localStorage.setItem("productos", enJSON);
     actualizarTabla();
-    console.log("Producto eliminado");
 }
 
 
